@@ -1,7 +1,7 @@
 /*
  * Create a list that holds all of your cards
  */
-var card_deck = [
+const card_deck = [
     "fa fa-diamond",
     "fa fa-paper-plane-o",
     "fa fa-anchor",
@@ -19,7 +19,11 @@ var card_deck = [
     "fa fa-paper-plane-o",
     "fa fa-cube"
 ];
-
+const deck = document.querySelectorAll(".card");
+const card = document.querySelector(".card");
+const restart = document.querySelector(".restart");
+let open_cards = [];
+let fliped = 0;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -42,21 +46,23 @@ function shuffle(array) {
     return array;
 }
 
-shuffle(card_deck);
-
-
-const deck = document.querySelectorAll(".card");
-// const card = document.createElement("i");
-
-for (let i = 0; i < deck.length; i++) {
+function createBoard() {
+    fliped = 0;
+    shuffle(card_deck);
+    
+    for (let i = 0; i < deck.length; i++) {
     deck[i].innerHTML = `<i class="fa ${card_deck[i]}"></i>`;
+    }
+
+    deck.forEach(function(card) {
+        card.addEventListener("click", function () { 
+            flipCard(card);
+        });
+    });
 }
 
+createBoard();
 
-$(".card").on("click", function() {
-    $(this).addClass("open");
-    $(this).addClass("show");
-})
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -67,3 +73,51 @@ $(".card").on("click", function() {
  *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
  *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
  */
+
+function flipCard(card) {
+    if (open_cards.length < 2) {
+        if (open_cards.length === 0) {
+            card.classList.add("open");
+            card.classList.add("show");
+            open_cards.push(card);
+        } else if (open_cards.length === 1) {
+            card.classList.add("open");
+            card.classList.add("show");
+            open_cards.push(card);
+            if (open_cards[0].firstChild.className === open_cards[1].firstChild.className) {
+                open_cards[0].classList.add("match");
+                open_cards[1].classList.add("match");
+                fliped += 2;
+                open_cards = [];
+                if (fliped === card_deck.length) {
+                    restart.insertAdjacentHTML("beforebegin", "<span class=\"won\">Play again. You won!</span>");
+                    restart.addEventListener("click", function () { 
+                        won();
+                    });
+                }
+            } else {
+                setTimeout(unflip, 700);
+            }
+        }
+    }
+}
+
+function unflip() {
+    open_cards[0].classList.remove("open");
+    open_cards[1].classList.remove("open");
+    open_cards[0].classList.remove("show");
+    open_cards[1].classList.remove("show");
+    open_cards = [];
+}
+
+
+function won() {
+    deck.forEach(function(card) {
+        card.classList.remove("match");
+        card.classList.remove("open");
+        card.classList.remove("show");
+    });
+    document.querySelector(".won").innerHTML = "";
+    createBoard();
+}
+

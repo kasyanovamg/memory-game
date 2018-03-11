@@ -107,3 +107,10 @@ h1 {
     float: right;
     cursor: pointer;
 }
+
+.won {
+    float: right;
+    padding-left: 10px;
+    font-weight: bold;
+    color: red;
+}
