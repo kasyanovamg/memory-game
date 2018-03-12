@@ -226,5 +226,3 @@ function modal() {
     }
     won();
 }
-
-modal();
