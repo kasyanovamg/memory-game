@@ -91,14 +91,14 @@ h1 {
     margin-bottom: 10px;
 }
 
-.score-panel .stars {
+.stars {
     margin: 0;
     padding: 0;
     display: inline-block;
     margin: 0 5px 0 0;
 }
 
-.score-panel .stars li {
+.stars li {
     list-style: none;
     display: inline-block;
 }
@@ -108,13 +108,9 @@ h1 {
     cursor: pointer;
 }
 
-/* .won {
-    float: right;
-    padding-left: 10px;
-    font-weight: bold;
-    color: red;
-} */
-
+.timer {
+    padding-left: 20px;
+}
 
 /* The Modal (background) */
 .modal {

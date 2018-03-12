@@ -22,8 +22,17 @@ const card_deck = [
 const deck = document.querySelectorAll(".card");
 const card = document.querySelector(".card");
 const restart = document.querySelector(".restart");
+const moveCount = document.querySelector(".moves");
+const stars = document.querySelectorAll(".fa-star");
+const timer = document.querySelector(".timer");
+const win_modal = document.querySelector(".win_modal");
 let open_cards = [];
 let fliped = 0;
+let moves = 0;
+let star = 3;
+let second = 0;
+let min = 0;
+let timer_start = false;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -48,6 +57,8 @@ function shuffle(array) {
 
 function createBoard() {
     fliped = 0;
+    moves = 0;
+    open_cards = [];
     shuffle(card_deck);
     
     for (let i = 0; i < deck.length; i++) {
@@ -56,13 +67,48 @@ function createBoard() {
 
     deck.forEach(function(card) {
         card.addEventListener("click", function () { 
+            moves += 1;
+            countMoves();
             flipCard(card);
         });
     });
+
 }
 
 createBoard();
+card.addEventListener("click", function () { 
+    if (timer_start === false) {
+        countTime(); 
+        timer_start = true;
+      }
+});
 
+function restartBoard() {
+    restart.addEventListener("click", function () {
+        fliped = 0;
+        moves = 0;
+        open_cards = [];
+        second = 0;
+        moveCount.innerHTML = moves;
+        shuffle(card_deck);
+        for (let i = 0; i < deck.length; i++) {
+            deck[i].innerHTML = `<i class="fa ${card_deck[i]}"></i>`;
+            }
+
+        //removes the classes
+        deck.forEach(function(card) {
+            card.classList.remove("match");
+            card.classList.remove("open");
+            card.classList.remove("show");
+        });
+
+        //resets the stars
+        stars.forEach(function(s) {
+            s.style.display = "inline-block";
+        })
+    });
+}
+restartBoard();
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -90,10 +136,11 @@ function flipCard(card) {
                 fliped += 2;
                 open_cards = [];
                 if (fliped === card_deck.length) {
-                    restart.insertAdjacentHTML("beforebegin", "<span class=\"won\">Play again. You won!</span>");
-                    restart.addEventListener("click", function () { 
-                        won();
-                    });
+                    modal();
+                    // restart.insertAdjacentHTML("beforebegin", "<span class=\"won\">Play again. You won!</span>");
+                    // restart.addEventListener("click", function () { 
+                    //     won();
+                    // });
                 }
             } else {
                 setTimeout(unflip, 700);
@@ -117,17 +164,55 @@ function won() {
         card.classList.remove("open");
         card.classList.remove("show");
     });
-    document.querySelector(".won").innerHTML = "";
-    createBoard();
 }
 
+function countMoves() {
+    moveCount.innerHTML = moves;
+
+    if ((moves >= 20) && (moves < 30)) {
+        star = 2;
+        stars[2].style.display = "none";
+
+    } else if ((moves >= 30) && (moves < 40)) {
+        star = 1;
+        stars[1].style.display = "none";
+
+    } else if ((moves >= 40)) {
+        star = 0;
+        stars[0].style.display = "none";
+    } 
+}
+
+function countTime() {
+    timeCounter = setInterval(function() {
+        let zero;
+        second++;
+        if (second == 59) {
+            second = 00;
+            min++;
+        }
+        if (second > 9) {
+            zero = '';
+        } else if (second <= 9) {
+            zero = 0;
+        }
+        timer.innerText = `Timer: ${min}:${zero}${second}`;
+    }, 1000);
+}
 
 function modal() {
-
-    var modal = document.getElementById('modal');
-    var span = document.getElementsByClassName("close")[0];
+    let modal = document.getElementById('modal');
+    let span = document.getElementsByClassName("close")[0];
 
     modal.style.display = "block";
+
+    win_modal.innerHTML = `
+    <h2> Congratulations! You won! </h2>
+    <p>It took you ${moves} moves. </p>
+    <span>Your star rate is ${document.querySelector(".stars").outerHTML} </span>
+    <p>It took you ${min} minutes ${second} seconds </p>
+    <button class="restart_btn">Restart</button>
+    `;
     // When the user clicks on <span> (x), close the modal
     span.onclick = function() {
         modal.style.display = "none";
@@ -139,6 +224,7 @@ function modal() {
             modal.style.display = "none";
         }
     }
+    won();
 }
 
 modal();
