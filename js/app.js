@@ -27,7 +27,6 @@ let second = 0;
 let min = 0;
 let timer_start = false;
 let timeCounter;
-let revealed;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -87,6 +86,7 @@ function restartBoard() {
     open_cards = [];
     second = 0;
     min = 0;
+    debugger
     timer_start = false;
     clearInterval(timeCounter);
     timer.innerText = "";
