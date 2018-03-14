@@ -33,6 +33,7 @@ let star = 3;
 let second = 0;
 let min = 0;
 let timer_start = false;
+let timeCounter;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -82,33 +83,39 @@ card.addEventListener("click", function () {
         timer_start = true;
       }
 });
+restart.addEventListener("click", function () {
+    restartBoard();
+});
 
 function restartBoard() {
-    restart.addEventListener("click", function () {
-        fliped = 0;
-        moves = 0;
-        open_cards = [];
-        second = 0;
-        moveCount.innerHTML = moves;
-        shuffle(card_deck);
-        for (let i = 0; i < deck.length; i++) {
-            deck[i].innerHTML = `<i class="fa ${card_deck[i]}"></i>`;
-            }
-
-        //removes the classes
-        deck.forEach(function(card) {
-            card.classList.remove("match");
-            card.classList.remove("open");
-            card.classList.remove("show");
-        });
-
-        //resets the stars
-        stars.forEach(function(s) {
-            s.style.display = "inline-block";
-        })
+    fliped = 0;
+    moves = 0;
+    open_cards = [];
+    second = 0;
+    min = 0;
+    timer_start = false;
+    clearInterval(timeCounter);
+    timer.innerText = "";
+  
+    moveCount.innerHTML = moves;
+    shuffle(card_deck);
+    for (let i = 0; i < deck.length; i++) {
+        deck[i].innerHTML = `<i class="fa ${card_deck[i]}"></i>`;
+        }
+    //removes the classes
+    deck.forEach(function(card) {
+        card.classList.remove("match");
+        card.classList.remove("open");
+        card.classList.remove("show");
     });
+
+    //resets the stars
+    stars.forEach(function(s) {
+        s.style.display = "inline-block";
+    })
+
 }
-restartBoard();
+
 /*
  * set up the event listener for a card. If a card is clicked:
  *  - display the card's symbol (put this functionality in another function that you call from this one)
@@ -136,11 +143,8 @@ function flipCard(card) {
                 fliped += 2;
                 open_cards = [];
                 if (fliped === card_deck.length) {
+                    clearInterval(timeCounter);
                     modal();
-                    // restart.insertAdjacentHTML("beforebegin", "<span class=\"won\">Play again. You won!</span>");
-                    // restart.addEventListener("click", function () { 
-                    //     won();
-                    // });
                 }
             } else {
                 setTimeout(unflip, 700);
@@ -169,15 +173,15 @@ function won() {
 function countMoves() {
     moveCount.innerHTML = moves;
 
-    if ((moves >= 20) && (moves < 30)) {
+    if ((moves >= 30) && (moves < 40)) {
         star = 2;
         stars[2].style.display = "none";
 
-    } else if ((moves >= 30) && (moves < 40)) {
+    } else if ((moves >= 40) && (moves < 50)) {
         star = 1;
         stars[1].style.display = "none";
 
-    } else if ((moves >= 40)) {
+    } else if ((moves >= 50)) {
         star = 0;
         stars[0].style.display = "none";
     } 
@@ -225,4 +229,9 @@ function modal() {
         }
     }
     won();
+
+    document.querySelector(".restart_btn").addEventListener("click", function () { 
+        restartBoard();
+        modal.style.display = "none";
+    });
 }
