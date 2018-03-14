@@ -167,16 +167,6 @@ function unflip() {
     open_cards = [];
 }
 
-
-function won() {
-    deck.forEach(function(card) {
-        card.classList.remove("match");
-        card.classList.remove("nomatch");
-        card.classList.remove("open");
-        card.classList.remove("show");
-    });
-}
-
 function countMoves() {
     moveCount.innerHTML = moves;
 
@@ -235,7 +225,6 @@ function modal() {
             modal.style.display = "none";
         }
     }
-    won();
 
     document.querySelector(".restart_btn").addEventListener("click", function () { 
         restartBoard();
