@@ -1,24 +1,17 @@
 /*
  * Create a list that holds all of your cards
  */
-const card_deck = [
+const card_deck_short = [
     "fa fa-diamond",
     "fa fa-paper-plane-o",
     "fa fa-anchor",
     "fa fa-bolt",
     "fa fa-cube",
-    "fa fa-anchor",
     "fa fa-leaf",
     "fa fa-bicycle",
-    "fa fa-diamond",
-    "fa fa-bomb",
-    "fa fa-leaf",
-    "fa fa-bomb",
-    "fa fa-bolt",
-    "fa fa-bicycle",
-    "fa fa-paper-plane-o",
-    "fa fa-cube"
+    "fa fa-bomb"
 ];
+const card_deck = card_deck_short.concat(card_deck_short);
 const deck = document.querySelectorAll(".card");
 const card = document.querySelector(".card");
 const restart = document.querySelector(".restart");
@@ -34,6 +27,7 @@ let second = 0;
 let min = 0;
 let timer_start = false;
 let timeCounter;
+let revealed;
 /*
  * Display the cards on the page
  *   - shuffle the list of cards using the provided "shuffle" method below
@@ -63,14 +57,13 @@ function createBoard() {
     shuffle(card_deck);
     
     for (let i = 0; i < deck.length; i++) {
-    deck[i].innerHTML = `<i class="fa ${card_deck[i]}"></i>`;
+        deck[i].innerHTML = `<i class="fa ${card_deck[i]}"></i>`;
     }
 
     deck.forEach(function(card) {
         card.addEventListener("click", function () { 
-            moves += 1;
-            countMoves();
             flipCard(card);
+            countMoves();
         });
     });
 
@@ -118,42 +111,34 @@ function restartBoard() {
 
 }
 
-/*
- * set up the event listener for a card. If a card is clicked:
- *  - display the card's symbol (put this functionality in another function that you call from this one)
- *  - add the card to a *list* of "open" cards (put this functionality in another function that you call from this one)
- *  - if the list already has another card, check to see if the two cards match
- *    + if the cards do match, lock the cards in the open position (put this functionality in another function that you call from this one)
- *    + if the cards do not match, remove the cards from the list and hide the card's symbol (put this functionality in another function that you call from this one)
- *    + increment the move counter and display it on the page (put this functionality in another function that you call from this one)
- *    + if all cards have matched, display a message with the final score (put this functionality in another function that you call from this one)
- */
-
 function flipCard(card) {
     if (open_cards.length < 2) {
-        if (open_cards.length === 0) {
+        if ((open_cards.length === 0) && (!card.classList.contains("show"))) {
             card.classList.add("open");
             card.classList.add("show");
             open_cards.push(card);
-        } else if (open_cards.length === 1) {
+            moves++;   
+        } else if ((open_cards.length === 1) && (!card.classList.contains("show"))) {
             card.classList.add("open");
             card.classList.add("show");
             open_cards.push(card);
+            moves++;
             if (open_cards[0].firstChild.className === open_cards[1].firstChild.className) {
                 open_cards[0].classList.add("match");
                 open_cards[1].classList.add("match");
                 fliped += 2;
                 open_cards = [];
-                if (fliped === card_deck.length) {
+                if (fliped === card_deck.length) {   
                     clearInterval(timeCounter);
                     modal();
                 }
-            } else {
+            } else {  
                 open_cards[0].classList.add("nomatch");
                 open_cards[1].classList.add("nomatch");
                 setTimeout(unflip, 800);
             }
         }
+       
     }
 }
 
@@ -167,6 +152,7 @@ function unflip() {
     open_cards = [];
 }
 
+//star rating
 function countMoves() {
     moveCount.innerHTML = moves;
 
@@ -174,16 +160,13 @@ function countMoves() {
         star = 2;
         stars[2].style.display = "none";
 
-    } else if ((moves >= 40) && (moves < 50)) {
+    } else if (moves >= 40) {
         star = 1;
         stars[1].style.display = "none";
-
-    } else if ((moves >= 50)) {
-        star = 0;
-        stars[0].style.display = "none";
     } 
 }
 
+//time counter
 function countTime() {
     timeCounter = setInterval(function() {
         let zero;
