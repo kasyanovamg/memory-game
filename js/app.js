@@ -90,6 +90,7 @@ restart.addEventListener("click", function () {
 function restartBoard() {
     fliped = 0;
     moves = 0;
+    star = 3;
     open_cards = [];
     second = 0;
     min = 0;
@@ -107,6 +108,7 @@ function restartBoard() {
         card.classList.remove("match");
         card.classList.remove("open");
         card.classList.remove("show");
+        card.classList.remove("nomatch");
     });
 
     //resets the stars
@@ -147,7 +149,9 @@ function flipCard(card) {
                     modal();
                 }
             } else {
-                setTimeout(unflip, 700);
+                open_cards[0].classList.add("nomatch");
+                open_cards[1].classList.add("nomatch");
+                setTimeout(unflip, 800);
             }
         }
     }
@@ -158,6 +162,8 @@ function unflip() {
     open_cards[1].classList.remove("open");
     open_cards[0].classList.remove("show");
     open_cards[1].classList.remove("show");
+    open_cards[0].classList.remove("nomatch");
+    open_cards[1].classList.remove("nomatch");
     open_cards = [];
 }
 
@@ -165,6 +171,7 @@ function unflip() {
 function won() {
     deck.forEach(function(card) {
         card.classList.remove("match");
+        card.classList.remove("nomatch");
         card.classList.remove("open");
         card.classList.remove("show");
     });
@@ -211,9 +218,9 @@ function modal() {
     modal.style.display = "block";
 
     win_modal.innerHTML = `
-    <h2> Congratulations! You won! </h2>
+    <h2 class="congrats"> Congratulations! You won! </h2>
     <p>It took you ${moves} moves. </p>
-    <span>Your star rate is ${document.querySelector(".stars").outerHTML} </span>
+    <span>Your star rate is ${star} ${document.querySelector(".stars").outerHTML} </span>
     <p>It took you ${min} minutes ${second} seconds </p>
     <button class="restart_btn">Restart</button>
     `;
